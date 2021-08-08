@@ -1,5 +1,3 @@
-import java.io.EOFException;
-import java.io.IOException;
 import java.util.Scanner;
 
 class UserIO
@@ -55,15 +53,12 @@ class UserIO
 				}
 			}
 			if(f3)
+			{
 				u.setAchieved(8, true);
-			try {
-				FileIO io=new FileIO();
-				io.update(u);
-				
-			}catch(EOFException e){}
-			catch (IOException e) {
-				e.printStackTrace();
 			}
+			MongoIO io=new MongoIO();
+			io.update(u);
+				
 			
 			GamePlay.clrscr();
 			System.out.println("\t\t\t   Menu");

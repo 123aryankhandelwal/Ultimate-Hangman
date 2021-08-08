@@ -1,7 +1,5 @@
 import java.io.Console;
-import java.io.EOFException;
-import java.io.FileNotFoundException;
-import java.io.IOException;
+import java.util.Scanner;
 
 class LoginPage
 {
@@ -75,144 +73,76 @@ class LoginPage
 			}
 		}while(!pass.equals(cp));
 		u.setPassword(new String(pass));
-		try
-		{
-			FileIO f = new FileIO();
-			f.write(u);
-			f.din.close();
-			f.dout.close();
-		}
-		catch(IOException e)
-		{
-			System.exit(-1);
-		}
+		MongoIO mout = new MongoIO();
+		mout.write(u);
 		return u;
 	}
 
 	private static boolean checkusrnm(String u)
 	{
-		boolean f = false;
-		FileIO fin = null;
-		Users u1 = null;
-		try
-		{
-			fin = new FileIO();
-			while(true)
-			{
-				u1 = fin.read();
-				if(u1.getUsername().equals(u))
-				{
-					f = true;
-					break;
-				}
-			}
-		}
-		catch(FileNotFoundException e)
-		{
-		}
-		catch(EOFException e)
-		{
-			try
-			{
-				fin.din.close();
-				fin.dout.close();
-			}
-			catch (IOException e1)
-			{
-				e1.printStackTrace();
-			}
+		MongoIO min = new MongoIO();
+		if(min.read(u) == null)
 			return false;
-		}
-		catch (IOException e)
-		{
-			e.printStackTrace();
-		}
-		return f;
+		return true;
 	}
 	static Users Login()
-	{
-		Users u = new Users();
-		String usrnm, pass;
-		char [] p;
-		boolean f = true;
-		FileIO fin = null;
-		
-		do
-		{
-			GamePlay.clrscr();
-			System.out.println("\n\n\t\t\tLogin");
-			System.out.println("Enter Username");
-			usrnm = System.console().readLine();
-			try
+    {
+		Scanner sc = new Scanner(System.in);
+        Users u = new Users();
+        String usrnm, pass;
+        MongoIO min=new MongoIO();
+        GamePlay.clrscr();
+        System.out.println("\n\n\t\t\tLogin");
+        System.out.println("Enter Username");
+        usrnm = sc.nextLine();
+        u = min.read(usrnm);
+        GamePlay.getch();
+        if(u != null)
+        {
+            do
+            {
+                GamePlay.clrscr();
+                System.out.println("Enter Password");
+                char p[] = new char[32];
+                p =    console.readPassword();
+                pass = new String(p);
+                if(u.getPassword().equals(pass))
+                {
+                    break;
+                }
+                do
+                {
+                    System.out.println("Password does not match\n Enter 1 to Re-Enter password\n Enter 2 to Go back to Main Menu");
+                    String s = System.console().readLine();
+                    if(s.matches("[1-2]"))
+                    {
+                        if(s.equals("1"))
+                            break;
+                        else return null;
+                    }
+                }while(true);
+                GamePlay.getch();
+            }while(true);
+        }
+        else
+        {
+        	do
 			{
-				fin = new FileIO();
-				while(true)
+				GamePlay.clrscr();
+				System.out.println("Username does not exist\n Please Enter again\n Or Sign up\n \n1.) Enter Username again\n2.) Signup");
+				String i = System.console().readLine();
+				i.strip();
+				switch(i)
 				{
-					u = fin.read();
-					if(u.getUsername().equals(usrnm))
-					{
-						f = false;
-						do
-						{
-							System.out.println("Enter Password");
-							p = console.readPassword();
-							pass = new String(p);
-							if(u.getPassword().equals(pass))
-							{
-								break;
-							}
-							do
-							{
-								System.out.println("Password does not match\n Enter 1 to Re-Enter password\n Enter 2 to Go back to Main Menu");
-								String s = System.console().readLine();
-								if(s.matches("[1-2]"))
-								{
-									if(s.equals("1"))
-										break;
-									else return null;
-										
-								}
-							}while(true);
-							GamePlay.getch();
-						}while(true);
-						break;
-					}
+					case "1" : break;
+					case "2" : return signup(null);
+					default : System.out.println("Enter Valid Symbol");
 				}
-			}
-			catch(EOFException e)
-			{
-				do
-				{
-					GamePlay.clrscr();
-					System.out.println("Username does not exist\n Please Enter again\n Or Sign up\n \n1.) Enter Username again\n2.) Signup");
-					String i = System.console().readLine();
-					i.strip();
-					switch(i)
-					{
-						case "1" : break;
-						case "2" : return signup(null);
-						default : System.out.println("Enter Valid Symbol");
-					}
-					if(i.equals("1"))
-						break;
-					GamePlay.getch();
-				}while(true);
-				try
-				{
-					fin.din.close();
-					fin.dout.close();
-				}
-				catch (IOException e1)
-				{
-					e1.printStackTrace();
-				}
-			}
-			catch (IOException e)
-			{
-				e.printStackTrace();
-			}
-		}while(f);
-		
+				if(i.equals("1"))
+					break;
+				GamePlay.getch();
+			}while(true);
+        }
 		return u;
-	}
+    }
 }

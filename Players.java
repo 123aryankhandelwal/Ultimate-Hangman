@@ -1,6 +1,6 @@
 class Players
 {
-	protected String Name;
+	public String Name;
 	final protected String [] Achievements; //Decide if you need to make it final
 	protected int [][] PB; // Personal Best
 	protected int noOfGames;  //Record no. of games played by the player

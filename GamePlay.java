@@ -180,20 +180,9 @@ public class GamePlay
 					break;
 					
 			}while(true);
-			FileIO fio;
-			try
-			{
-				fio = new FileIO();
-				fio.update(P);
-			}
-			catch (FileNotFoundException e)
-			{
-				e.printStackTrace();
-			}
-			catch (IOException e)
-			{
-				e.printStackTrace();
-			}		
+			MongoIO mio;
+			mio = new MongoIO();
+			mio.update(P);
 		} while(yn.matches("[yY]"));
 	}
 	static void play(Guest P)
